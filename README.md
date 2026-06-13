@@ -121,15 +121,6 @@ Como tudo cai no schema `estoque_ia`, não mexe em mais nada que já exista no b
    OpenRouter sem mudar mais nada — é só trocar o nó ligado na entrada Chat Model.
 4. Abre o chat (botão *Open Chat* do Chat Trigger) e começa a conversar.
 
-### 3. Alertas automáticos (extra)
-
-O `n8n/workflow_alertas_agendado.json` é um fluxo separado que roda todo dia,
-chama o `alertas_reposicao` e, se tiver item abaixo do mínimo, segue pra um ponto
-de notificação (e-mail, WhatsApp ou Slack — fica a critério de quem for usar).
-
-As credenciais não ficam no repositório. Os valores necessários estão no
-`.env.example`.
-
 ## Exemplos do que dá pra pedir
 
 O agente entende as variações de linguagem natural, não precisa de comando fixo:
@@ -146,22 +137,4 @@ O agente entende as variações de linguagem natural, não precisa de comando fi
 - "Tem algo precisando de reposição?"
 - "Pode excluir a Cadeira Gamer"
 
-## Organização dos arquivos
 
-```
-agente-estoque-ia-n8n/
-├── README.md
-├── .gitignore
-├── .env.example
-├── n8n/
-│   ├── workflow_agente_estoque.json     fluxo principal (agente + ferramentas)
-│   └── workflow_alertas_agendado.json   alertas automáticos
-├── database/
-│   ├── 01_schema_e_tabelas.sql
-│   ├── 02_funcoes_crud.sql
-│   ├── 03_funcoes_movimentacao_relatorios.sql
-│   └── 04_seed_demonstracao.sql
-└── docs/
-    ├── ARQUITETURA.md
-    └── fluxograma.md
-```
