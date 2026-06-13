@@ -1,11 +1,3 @@
--- =====================================================================
--- Arquivo 02: Helper interno + Funções CRUD
--- Todas as funções recebem um único parâmetro jsonb (payload) e
--- retornam jsonb { sucesso, mensagem, dados } — contrato simples e
--- seguro para o Agente de IA preencher.
--- =====================================================================
-
--- Helper interno: localiza um produto ativo por nome (exato ou parcial)
 create or replace function estoque_ia._buscar_produto(p_nome text)
 returns estoque_ia.produtos
 language sql stable
@@ -19,10 +11,6 @@ as $$
   limit 1;
 $$;
 
--- =====================================================================
--- 1) CADASTRAR PRODUTO
--- payload: { nome, preco, quantidade, categoria, descricao, estoque_minimo }
--- =====================================================================
 create or replace function estoque_ia.cadastrar_produto(p jsonb)
 returns jsonb
 language plpgsql security definer
@@ -63,10 +51,6 @@ exception when others then
 end;
 $$;
 
--- =====================================================================
--- 2) CONSULTAR PRODUTO (específico, por nome)
--- payload: { nome }
--- =====================================================================
 create or replace function estoque_ia.consultar_produto(p jsonb)
 returns jsonb
 language plpgsql security definer
@@ -94,10 +78,6 @@ begin
 end;
 $$;
 
--- =====================================================================
--- 3) LISTAR TODOS OS PRODUTOS
--- payload: {} (ignorado)
--- =====================================================================
 create or replace function estoque_ia.listar_produtos(p jsonb default '{}'::jsonb)
 returns jsonb
 language plpgsql security definer
@@ -118,11 +98,6 @@ begin
 end;
 $$;
 
--- =====================================================================
--- 4) ATUALIZAR PRODUTO
--- payload: { nome, novo_nome, preco, quantidade, categoria, descricao, estoque_minimo }
---   - "quantidade" define o estoque de forma ABSOLUTA (ex.: "atualize para 80")
--- =====================================================================
 create or replace function estoque_ia.atualizar_produto(p jsonb)
 returns jsonb
 language plpgsql security definer
@@ -151,7 +126,6 @@ begin
     estoque_minimo = coalesce((p->>'estoque_minimo')::integer, estoque_minimo)
   where id = v_prod.id;
 
-  -- Ajuste de quantidade absoluto (registra movimentação de ajuste)
   if (p ? 'quantidade') and nullif(p->>'quantidade','') is not null then
     v_nova_qtd := (p->>'quantidade')::integer;
     v_delta := v_nova_qtd - v_prod.quantidade;
@@ -172,10 +146,6 @@ exception when others then
 end;
 $$;
 
--- =====================================================================
--- 5) EXCLUIR PRODUTO (exclusão lógica - preserva histórico)
--- payload: { nome }
--- =====================================================================
 create or replace function estoque_ia.excluir_produto(p jsonb)
 returns jsonb
 language plpgsql security definer
