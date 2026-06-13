@@ -1,11 +1,3 @@
--- =====================================================================
--- Arquivo 03: Funções de movimentação, relatórios e inteligência
--- =====================================================================
-
--- =====================================================================
--- 6) REGISTRAR ENTRADA DE ESTOQUE
--- payload: { nome, quantidade, preco_unitario, observacao }
--- =====================================================================
 create or replace function estoque_ia.registrar_entrada(p jsonb)
 returns jsonb
 language plpgsql security definer
@@ -43,10 +35,6 @@ exception when others then
 end;
 $$;
 
--- =====================================================================
--- 7) REGISTRAR SAÍDA DE ESTOQUE
--- payload: { nome, quantidade, observacao }
--- =====================================================================
 create or replace function estoque_ia.registrar_saida(p jsonb)
 returns jsonb
 language plpgsql security definer
@@ -93,10 +81,6 @@ exception when others then
 end;
 $$;
 
--- =====================================================================
--- 8) CONSULTAR PRODUTOS COM ESTOQUE BAIXO
--- payload: { limite }  (opcional: limiar fixo; default = estoque_minimo de cada produto)
--- =====================================================================
 create or replace function estoque_ia.consultar_estoque_baixo(p jsonb default '{}'::jsonb)
 returns jsonb
 language plpgsql security definer
@@ -119,10 +103,6 @@ begin
 end;
 $$;
 
--- =====================================================================
--- 9) GERAR RELATÓRIO DE PRODUTOS
--- payload: {} (ignorado)
--- =====================================================================
 create or replace function estoque_ia.relatorio_produtos(p jsonb default '{}'::jsonb)
 returns jsonb
 language plpgsql security definer
@@ -149,10 +129,6 @@ begin
 end;
 $$;
 
--- =====================================================================
--- 10) PRODUTOS COM MAIOR MOVIMENTAÇÃO / VOLUME DE VENDAS
--- payload: { limite }  (default 5)
--- =====================================================================
 create or replace function estoque_ia.produtos_mais_movimentados(p jsonb default '{}'::jsonb)
 returns jsonb
 language plpgsql security definer
@@ -178,10 +154,6 @@ begin
 end;
 $$;
 
--- =====================================================================
--- 11) ALERTAS AUTOMÁTICOS DE REPOSIÇÃO
--- payload: {} (ignorado) — itens no/abaixo do mínimo + sugestão de compra
--- =====================================================================
 create or replace function estoque_ia.alertas_reposicao(p jsonb default '{}'::jsonb)
 returns jsonb
 language plpgsql security definer
@@ -203,8 +175,5 @@ begin
 end;
 $$;
 
--- ---------------------------------------------------------------------
--- Permissões (necessárias apenas se for expor via API REST/PostgREST)
--- ---------------------------------------------------------------------
 grant usage on schema estoque_ia to anon, authenticated, service_role;
 grant execute on all functions in schema estoque_ia to anon, authenticated, service_role;
